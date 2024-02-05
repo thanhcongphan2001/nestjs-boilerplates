@@ -1,5 +1,10 @@
+import { Length, IsEmail, IsNotEmpty } from 'class-validator';
+
 export class CreateUserDto {
-    name: string
-    email: string
-    password: string
+  @IsEmail({}, { message: 'Lỗi email' })
+  email: string;
+
+  name: string;
+
+  password: string;
 }
