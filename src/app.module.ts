@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { dataSourceOptions } from 'db/data-source';
+import { AuthModule } from './auth/auth.module';
+import { HeheModule } from './hehe/hehe.module';
 
 // useFactory: (configService: ConfigService) => ({
 //   type: 'postgres',
@@ -22,12 +24,14 @@ import { dataSourceOptions } from 'db/data-source';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => (dataSourceOptions),
+      useFactory: (configService: ConfigService) => dataSourceOptions,
     }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     UsersModule,
+    AuthModule,
+    HeheModule,
   ],
   controllers: [AppController],
   providers: [AppService],

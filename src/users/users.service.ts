@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MyUser } from './entities/user.entity';
-import { genSaltSync, hashSync } from 'bcryptjs';
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -18,6 +18,17 @@ export class UsersService {
     var hash = hashSync(password, salt);
     return hash;
   };
+
+  findOneByUsername(username: string) {
+    return this.usersRepository.findOne({
+      where: { name: username },
+    });
+  }
+
+  isValidPassword(password: string, hash: string) {
+    return compareSync(password, hash);
+  }
+
   async create(createUserDto: CreateUserDto) {
     try {
       const newUser = this.usersRepository.create({
