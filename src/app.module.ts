@@ -7,20 +7,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { dataSourceOptions } from 'db/data-source';
 import { AuthModule } from './auth/auth.module';
-import { HeheModule } from './hehe/hehe.module';
+import { MailModule } from './mail/mail.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
-// useFactory: (configService: ConfigService) => ({
-//   type: 'postgres',
-//   host: configService.get<string>('DATABASE_HOST'),
-//   port: configService.get<number>('DATABASE_PORT'),
-//   username: configService.get<string>('DATABASE_USERNAME'),
-//   password: configService.get<string>('DATABASE_PASSWORD'),
-//   database: configService.get<string>('DATABASE_NAME'),
-//   entities: [User],
-//   synchronize: true, // Chỉ nên sử dụng trong môi trường phát triển
-// }),
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 2,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,7 +26,7 @@ import { HeheModule } from './hehe/hehe.module';
     }),
     UsersModule,
     AuthModule,
-    HeheModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

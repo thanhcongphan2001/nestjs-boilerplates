@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,14 +14,14 @@ export class UsersService {
   ) {}
 
   getHashPassword = (password: string) => {
-    var salt = genSaltSync(10);
-    var hash = hashSync(password, salt);
+    const salt = genSaltSync(10);
+    const hash = hashSync(password, salt);
     return hash;
   };
 
-  findOneByUsername(username: string) {
+  findOneByEmail(username: string) {
     return this.usersRepository.findOne({
-      where: { name: username },
+      where: { email: username },
     });
   }
 
@@ -83,5 +83,32 @@ export class UsersService {
     } catch (error) {
       return `Error deleting user with ID ${id}: ${error.message}`;
     }
+  }
+
+  async register(user: CreateUserDto) {
+    const { name, email, password } = user;
+    const isExits = await this.usersRepository.findOne({
+      where: { email: email },
+    });
+    if (isExits) {
+      throw new BadRequestException(`Email ${email} đã tồn tại`);
+    }
+    const newUser = this.usersRepository.create({
+      ...user,
+      password: this.getHashPassword(password),
+    });
+    const savedUser = await this.usersRepository.save(newUser);
+    return savedUser;
+  }
+
+  async updateUserToken(refresh_token, id) {
+    return await this.usersRepository.update(id, {
+      refresh_token: refresh_token,
+    });
+  }
+  async findUserByToken(refresh_token) {
+    return await this.usersRepository.findOne({
+      where: { refresh_token: refresh_token },
+    });
   }
 }

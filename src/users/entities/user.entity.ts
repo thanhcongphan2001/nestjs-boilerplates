@@ -20,6 +20,9 @@ export class MyUser extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column({ nullable: true })
+  refresh_token: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 }
