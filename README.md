@@ -29,20 +29,29 @@
 ## Installation
 
 ```bash
-$ pnpm install
+$ npm install
+```
+
+## Prepare
+
+Prepare a postgresql , create .env file from env.example
+
+```bash
+# Prepare migration
+$ npm run migration:run
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ pnpm run start
+$ npm run start
 
 # watch mode
-$ pnpm run start:dev
+$ npm run start:dev
 
 # production mode
-$ pnpm run start:prod
+$ npm run start:prod
 ```
 
 ## Test
